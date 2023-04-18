@@ -14,8 +14,12 @@ pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load("fusee.png")
 pygame.display.set_icon(icon)
 
+#Background
+background = pygame.image.load("background.png")
+
+
 # Player image info
-playerImg = pygame.image.load("avatar.png")
+playerImg = pygame.image.load("spaceship.png")
 playerX = 370
 playerY = 480
 playerX_change = 0
@@ -24,9 +28,15 @@ playerX_change = 0
 enemyImg = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
 enemyX = random.randint(0, 736)
 enemyY = random.randint(50, 150)
-enemyX_change = 0.3
+enemyX_change = 3
 enemyY_change = 40
 
+# Enemy image info
+enemyImg = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
+enemyX = random.randint(0, 736)
+enemyY = random.randint(50, 150)
+enemyX_change = 3
+enemyY_change = 40
 
 # Inserting player
 def player(x, y):
@@ -43,6 +53,8 @@ while running:
     # Screen fill, rgb values
     screen.fill((0, 0, 0))
 
+    #BG image
+    screen.blit(background, (0,0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -50,9 +62,9 @@ while running:
         # Key pressed event condition, check whether is right or left
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                playerX_change = -0.3
+                playerX_change = -5
             if event.key == pygame.K_RIGHT:
-                playerX_change = 0.3
+                playerX_change = 5
 
         # Key released event condition, stop spaceship movement when key is released
         if event.type == pygame.KEYUP:
@@ -73,10 +85,10 @@ while running:
     enemyX += enemyX_change
     #Checking for enemy boundaries
     if enemyX <= 0:
-        enemyX_change = 0.3
+        enemyX_change = 3
         enemyY += enemyY_change
     elif enemyX >= 736:
-        enemyX_change = -0.3
+        enemyX_change = -3
         enemyY += enemyY_change
 
     # Adding player
