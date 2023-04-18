@@ -14,9 +14,8 @@ pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load("fusee.png")
 pygame.display.set_icon(icon)
 
-#Background
+# Background
 background = pygame.image.load("background.png")
-
 
 # Player image info
 playerImg = pygame.image.load("spaceship.png")
@@ -31,21 +30,32 @@ enemyY = random.randint(50, 150)
 enemyX_change = 3
 enemyY_change = 40
 
-# Enemy image info
-enemyImg = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
-enemyX = random.randint(0, 736)
-enemyY = random.randint(50, 150)
-enemyX_change = 3
-enemyY_change = 40
+# Bullet image info
+bulletImg = pygame.image.load("bullet.png")
+bulletX = 0
+bulletY = 480
+bulletX_change = 0
+bulletY_change = 10
+# Ready state - You can't see bullet onscreen
+# Fire - Bullet currently moving
+bullet_state = "ready"
+
 
 # Inserting player
 def player(x, y):
     screen.blit(playerImg, (x, y))
 
 
-# Inserting Enemyplayer
+# Inserting Enemy player
 def enemy(x, y):
     screen.blit(enemyImg, (x, y))
+
+
+# Firing bullet
+def fire_bullet(x, y):
+    global bullet_state
+    bullet_state = "fire"
+    screen.blit(bulletImg, (x + 16, y + 10))
 
 
 # Game loop
@@ -53,8 +63,8 @@ while running:
     # Screen fill, rgb values
     screen.fill((0, 0, 0))
 
-    #BG image
-    screen.blit(background, (0,0))
+    # BG image
+    screen.blit(background, (0, 0))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -65,6 +75,8 @@ while running:
                 playerX_change = -5
             if event.key == pygame.K_RIGHT:
                 playerX_change = 5
+            if event.key == pygame.K_SPACE:
+                fire_bullet(playerX, bulletY)
 
         # Key released event condition, stop spaceship movement when key is released
         if event.type == pygame.KEYUP:
@@ -75,21 +87,26 @@ while running:
     # 5 = 5 + 0.1 Player movements
     playerX += playerX_change
 
-    #Checking for player boundaries
+    # Checking for player boundaries
     if playerX <= 0:
         playerX = 0
     elif playerX >= 736:
         playerX = 736
 
-    #Enemy movement
+    # Enemy movement
     enemyX += enemyX_change
-    #Checking for enemy boundaries
+    # Checking for enemy boundaries
     if enemyX <= 0:
         enemyX_change = 3
         enemyY += enemyY_change
     elif enemyX >= 736:
         enemyX_change = -3
         enemyY += enemyY_change
+
+    #Bullet movement
+    if bullet_state == "fire":
+        fire_bullet(playerX, bulletY)
+        bulletY -= bulletY_change
 
     # Adding player
     player(playerX, playerY)
