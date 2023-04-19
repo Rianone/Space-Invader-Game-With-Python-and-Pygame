@@ -18,6 +18,10 @@ pygame.display.set_icon(icon)
 # Background
 background = pygame.image.load("background.png")
 
+# Background Sound
+pygame.mixer.music.load('background.wav')
+pygame.mixer.music.play(-1)
+
 # Player image info
 playerImg = pygame.image.load("spaceship.png")
 playerX = 370
@@ -49,8 +53,12 @@ bulletY_change = 10
 # Fire - Bullet currently moving
 bullet_state = "ready"
 
-#score variable
-score = 0
+# Score
+score_value = 0
+font = pygame.font.Font("Poppins-Light.ttf", 30)
+textX = 15
+textY = 15
+
 
 # Inserting player
 def player(x, y):
@@ -78,6 +86,11 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
         return False
 
 
+def showScore(x, y):
+    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
+    screen.blit(score, (x, y))
+
+
 # Game loop
 while running:
     # Screen fill, rgb values
@@ -97,6 +110,8 @@ while running:
                 playerX_change = 4
             if event.key == pygame.K_SPACE:
                 if bullet_state == "ready":
+                    bullet_sound = pygame.mixer.Sound("laser.wav")
+                    bullet_sound.play()
                     # Getting the current X coordinate of the spaceship
                     bulletX = playerX
                     fire_bullet(bulletX, bulletY)
@@ -132,11 +147,12 @@ while running:
         if collision:
             bulletY = 480
             bullet_state = "ready"
-            score += 1
-            print(score)
+            score_value += 1
             enemyImg[i] = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
             enemyX[i] = random.randint(0, 735)
             enemyY[i] = random.randint(50, 150)
+            collision_sound = pygame.mixer.Sound("explosion.wav")
+            collision_sound.play()
 
         # Adding enemy
         enemy(enemyX[i], enemyY[i], i)
@@ -149,9 +165,10 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-
     # Adding player
     player(playerX, playerY)
 
+    # Show score
+    showScore(textX,textY)
 
     pygame.display.update()
