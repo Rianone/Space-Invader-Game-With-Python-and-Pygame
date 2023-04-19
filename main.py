@@ -34,7 +34,8 @@ enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change = []
-num_of_enemies = 6
+num_of_enemies = 2
+
 
 for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load("alien" + str(random.randint(1, 4)) + ".png"))
@@ -59,6 +60,10 @@ font = pygame.font.Font("Poppins-Light.ttf", 30)
 textX = 15
 textY = 15
 
+# End game text
+end_font = pygame.font.Font("Poppins-Bold.ttf", 64)
+endX = 15
+endY = 15
 
 # Inserting player
 def player(x, y):
@@ -77,7 +82,7 @@ def fire_bullet(x, y):
     screen.blit(bulletImg, (x + 16, y + 10))
 
 
-# Find wheter there is collision btw the bullet and the enemy
+# Find whether there is collision btw the bullet and the enemy
 def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt((math.pow(enemyX - bulletX, 2)) + (math.pow(enemyY - bulletY, 2)))
     if distance < 27:
@@ -85,11 +90,17 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
     else:
         return False
 
-
+# Show score
 def showScore(x, y):
     score = font.render("Score : " + str(score_value), True, (255, 255, 255))
     screen.blit(score, (x, y))
 
+# Game over text function
+def game_over_text():
+    end_text = end_font.render("GAME OVER", True, (255, 255, 255))
+    score = font.render("Total score : " + str(score_value), True, (255, 255, 255))
+    screen.blit(end_text, (210, 200))
+    screen.blit(score, (320, 300))
 
 # Game loop
 while running:
@@ -131,8 +142,18 @@ while running:
     elif playerX >= 736:
         playerX = 736
 
+    
+
     # Enemy movement
     for i in range(num_of_enemies):
+
+        # Game Over
+        if enemyY[i] > 450:
+            for j in range(num_of_enemies):
+                enemyY[j] = 2000
+            game_over_text()
+            break
+
         enemyX[i] += enemyX_change[i]
         # Checking for enemy boundaries
         if enemyX[i] <= 0:
