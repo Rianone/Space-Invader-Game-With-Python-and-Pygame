@@ -26,7 +26,7 @@ playerX_change = 0
 
 # Enemy image info
 enemyImg = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
-enemyX = random.randint(0, 736)
+enemyX = random.randint(0, 735)
 enemyY = random.randint(50, 150)
 enemyX_change = 2
 enemyY_change = 40
@@ -41,6 +41,8 @@ bulletY_change = 10
 # Fire - Bullet currently moving
 bullet_state = "ready"
 
+#score variable
+score = 0
 
 # Inserting player
 def player(x, y):
@@ -58,13 +60,15 @@ def fire_bullet(x, y):
     bullet_state = "fire"
     screen.blit(bulletImg, (x + 16, y + 10))
 
-#Find wheter there is collision btw the bullet and the enemy
+
+# Find wheter there is collision btw the bullet and the enemy
 def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt((math.pow(enemyX - bulletX, 2)) + (math.pow(enemyY - bulletY, 2)))
     if distance < 27:
         return True
     else:
         return False
+
 
 # Game loop
 while running:
@@ -80,12 +84,12 @@ while running:
         # Key pressed event condition, check whether is right or left
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                playerX_change = -5
+                playerX_change = -4
             if event.key == pygame.K_RIGHT:
-                playerX_change = 5
+                playerX_change = 4
             if event.key == pygame.K_SPACE:
                 if bullet_state == "ready":
-                    #Getting the current X coordinate of the spaceship
+                    # Getting the current X coordinate of the spaceship
                     bulletX = playerX
                     fire_bullet(bulletX, bulletY)
 
@@ -121,6 +125,17 @@ while running:
     if bullet_state == "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
+
+    # Collision
+    collision = isCollision(enemyX,enemyY,bulletX,bulletY)
+    if collision:
+        bulletY = 480
+        bullet_state = "ready"
+        score += 1
+        print(score)
+        enemyImg = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
+        enemyX = random.randint(0, 735)
+        enemyY = random.randint(50, 150)
 
     # Adding player
     player(playerX, playerY)
