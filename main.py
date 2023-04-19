@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 
 # initialised pygame
 pygame.init()
@@ -27,7 +28,7 @@ playerX_change = 0
 enemyImg = pygame.image.load("alien" + str(random.randint(1, 4)) + ".png")
 enemyX = random.randint(0, 736)
 enemyY = random.randint(50, 150)
-enemyX_change = 3
+enemyX_change = 2
 enemyY_change = 40
 
 # Bullet image info
@@ -57,6 +58,13 @@ def fire_bullet(x, y):
     bullet_state = "fire"
     screen.blit(bulletImg, (x + 16, y + 10))
 
+#Find wheter there is collision btw the bullet and the enemy
+def isCollision(enemyX, enemyY, bulletX, bulletY):
+    distance = math.sqrt((math.pow(enemyX - bulletX, 2)) + (math.pow(enemyY - bulletY, 2)))
+    if distance < 27:
+        return True
+    else:
+        return False
 
 # Game loop
 while running:
@@ -76,7 +84,10 @@ while running:
             if event.key == pygame.K_RIGHT:
                 playerX_change = 5
             if event.key == pygame.K_SPACE:
-                fire_bullet(playerX, bulletY)
+                if bullet_state == "ready":
+                    #Getting the current X coordinate of the spaceship
+                    bulletX = playerX
+                    fire_bullet(bulletX, bulletY)
 
         # Key released event condition, stop spaceship movement when key is released
         if event.type == pygame.KEYUP:
@@ -97,15 +108,18 @@ while running:
     enemyX += enemyX_change
     # Checking for enemy boundaries
     if enemyX <= 0:
-        enemyX_change = 3
+        enemyX_change = 2
         enemyY += enemyY_change
     elif enemyX >= 736:
-        enemyX_change = -3
+        enemyX_change = -2
         enemyY += enemyY_change
 
-    #Bullet movement
+    # Bullet movement
+    if bulletY <= 0:
+        bulletY = 480
+        bullet_state = "ready"
     if bullet_state == "fire":
-        fire_bullet(playerX, bulletY)
+        fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
     # Adding player
