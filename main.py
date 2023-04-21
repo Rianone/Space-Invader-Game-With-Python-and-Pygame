@@ -97,15 +97,32 @@ def showScore(x, y):
 
 # Game over text function
 def game_over_text():
+    global best_score
+    # try:
+    file = open('./score.txt', 'r')
+    best_score = file.read()
+    file.close()
+    # except: 
+    #     file = open("score", "w")
+    #     file.write("Best Score : "+ str(score_value))
+    #     best_score = "Best Score : " + str(score_value)
+        
+
     end_text = end_font.render("GAME OVER", True, (255, 255, 255))
     score = font.render("Total score : " + str(score_value), True, (255, 255, 255))
+    best_score_text = font.render(best_score, True, (255, 255, 255))
+    
     screen.blit(end_text, (210, 200))
-    screen.blit(score, (320, 300))
+    screen.blit(score, (330, 300))
+    screen.blit(best_score_text, (330, 350))
 
 # Game loop
 while running:
     # Screen fill, rgb values
     screen.fill((0, 0, 0))
+
+    # Actual time
+    act_time = pygame.time.get_ticks()
 
     # BG image
     screen.blit(background, (0, 0))
@@ -185,6 +202,18 @@ while running:
     if bullet_state == "fire":
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
+    
+    # Add difficulty
+    if (act_time % 6000) == 0:
+        print("hello")
+        new_enemy_number = num_of_enemies + 2
+        for num_of_enemies in range(new_enemy_number):
+            enemyImg.append(pygame.image.load(
+                "alien" + str(random.randint(1, 4)) + ".png"))
+            enemyX.append(random.randint(0, 735))
+            enemyY.append(random.randint(50, 150))
+            enemyX_change.append(2)
+            enemyY_change.append(40)
 
     # Adding player
     player(playerX, playerY)
