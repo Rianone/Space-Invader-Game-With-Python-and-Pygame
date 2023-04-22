@@ -98,14 +98,24 @@ def showScore(x, y):
 # Game over text function
 def game_over_text():
     global best_score
-    # try:
-    file = open('./score.txt', 'r')
-    best_score = file.read()
-    file.close()
-    # except: 
-    #     file = open("score", "w")
-    #     file.write("Best Score : "+ str(score_value))
-    #     best_score = "Best Score : " + str(score_value)
+    try:
+        file = open('score.txt', 'r')
+        score_read = file.read()
+        score = score_read.split(" ")
+        score = score[3]
+
+        if(int(score) > score_value):
+            best_score = score_read
+            file.close()
+        else:
+            file1 = open("score.txt", "w")
+            file1.write("Best Score : " + str(score_value))
+            best_score = "Best Score : " + str(score_value)
+            file1.close()
+    except: 
+        file = open("score.txt", "w")
+        file.write("Best Score : "+ str(score_value))
+        best_score = "Best Score : " + str(score_value)
         
 
     end_text = end_font.render("GAME OVER", True, (255, 255, 255))
@@ -205,7 +215,6 @@ while running:
     
     # Add difficulty
     if (act_time % 6000) == 0:
-        print("hello")
         new_enemy_number = num_of_enemies + 2
         for num_of_enemies in range(new_enemy_number):
             enemyImg.append(pygame.image.load(
