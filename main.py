@@ -34,7 +34,7 @@ enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change = []
-num_of_enemies = 2
+num_of_enemies = 5
 
 
 for i in range(num_of_enemies):
